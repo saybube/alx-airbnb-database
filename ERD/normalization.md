@@ -1,5 +1,4 @@
 NORMALIZATION CHANGES (3NF)
-═══════════════════════════
 Added:
   • Location table (from Property.location)
   • Amenity + PropertyAmenity (M:N)
