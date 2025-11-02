@@ -24,3 +24,56 @@ JOIN "User" u ON b.user_id = u.user_id
 JOIN Property p ON b.property_id = p.property_id
 LEFT JOIN Payment pay ON pay.booking_id = b.booking_id
 ORDER BY b.created_at DESC;
+
+
+EXPLAIN
+SELECT
+    b.booking_id,
+    b.property_id,
+    b.user_id,
+    b.start_date,
+    b.end_date,
+    b.total_price AS booking_total_price,
+    b.status AS booking_status,
+    b.created_at AS booking_created_at,
+    u.first_name AS user_first_name,
+    u.last_name AS user_last_name,
+    u.email AS user_email,
+    p.name AS property_name,
+    p.pricepernight AS property_pricepernight,
+    pay.amount AS payment_amount,
+    pay.payment_date AS payment_date,
+    pay.payment_method AS payment_method
+FROM Booking b
+JOIN "User" u ON b.user_id = u.user_id
+JOIN Property p ON b.property_id = p.property_id
+LEFT JOIN Payment pay ON pay.booking_id = b.booking_id
+WHERE b.status = 'confirmed'
+AND pay.amount > 0
+ORDER BY b.created_at DESC;
+
+-- Step 2: (Optional) Run the query itself after analyzing
+SELECT
+    b.booking_id,
+    b.property_id,
+    b.user_id,
+    b.start_date,
+    b.end_date,
+    b.total_price AS booking_total_price,
+    b.status AS booking_status,
+    b.created_at AS booking_created_at,
+    u.first_name AS user_first_name,
+    u.last_name AS user_last_name,
+    u.email AS user_email,
+    p.name AS property_name,
+    p.pricepernight AS property_pricepernight,
+    pay.amount AS payment_amount,
+    pay.payment_date AS payment_date,
+    pay.payment_method AS payment_method
+FROM Booking b
+JOIN "User" u ON b.user_id = u.user_id
+JOIN Property p ON b.property_id = p.property_id
+LEFT JOIN Payment pay ON pay.booking_id = b.booking_id
+WHERE b.status = 'confirmed'
+AND pay.amount > 0
+ORDER BY b.created_at DESC;
