@@ -15,6 +15,8 @@ INNER JOIN User u ON b.user_id = u.user_id
 
 ORDER BY b.created_at DESC;
 
+
+
 SELECT 
     p.property_id,
     p.name AS property_name,
@@ -34,45 +36,32 @@ LEFT JOIN User u ON r.user_id = u.user_id
 
 ORDER BY p.property_id, r.created_at DESC;
 
-SELECT 
-    u.user_id,
-    CONCAT(u.first_name, ' ', u.last_name) AS user_name,
-    u.email,
-    u.role,
-    b.booking_id,
-    b.start_date,
-    b.end_date,
-    b.total_price,
-    b.status,
-    CASE 
-        WHEN u.user_id IS NULL THEN 'Orphaned Booking'
-        WHEN b.booking_id IS NULL THEN 'No Bookings'
-        ELSE 'Valid Record'
-    END AS record_status
 
-FROM User u
-LEFT JOIN Booking b ON u.user_id = b.user_id
 
-UNION
 
 SELECT 
     u.user_id,
     CONCAT(u.first_name, ' ', u.last_name) AS user_name,
     u.email,
     u.role,
+    u.created_at AS user_created_at,
+    
     b.booking_id,
     b.start_date,
     b.end_date,
+    DATEDIFF(b.end_date, b.start_date) AS nights,
     b.total_price,
-    b.status,
+    b.status AS booking_status,
+    b.created_at AS booking_created_at,
+    
+    -- Status indicator
     CASE 
-        WHEN u.user_id IS NULL THEN 'Orphaned Booking'
-        WHEN b.booking_id IS NULL THEN 'No Bookings'
-        ELSE 'Valid Record'
-    END AS record_status
+        WHEN u.user_id IS NULL THEN 'Orphaned Booking (No User Found)'
+        WHEN b.booking_id IS NULL THEN 'User Has No Bookings'
+        ELSE 'Valid User-Booking Record'
+    END AS record_type
 
 FROM User u
-RIGHT JOIN Booking b ON u.user_id = b.user_id
-WHERE u.user_id IS NULL
+FULL OUTER JOIN Booking b ON u.user_id = b.user_id
 
-ORDER BY record_status, user_name;
+ORDER BY record_type, user_name, b.created_at DESC;
